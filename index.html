@@ -2,6 +2,8 @@
 
 <html lang="ja">
 <head>
+  <link rel="stylesheet" href="./assets/css/style.css">
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>サウナ部活動記録</title>
@@ -21,70 +23,99 @@
   <h2>サウナ活動の登録</h2>
 
   <form id="log-form" autocomplete="off">
-    <div>
-      <label for="dt">日時 (JST)</label><br />
-      <input type="datetime-local" id="dt" required />
-    </div>
+    <!-- 住所 -->
+<div>
+  <label for="address">住所（任意）</label><br />
+  <input type="text" id="address" placeholder="例：福岡市博多区〜" />
+</div>
 
-    <div>
-      <label for="place">施設名</label><br />
-      <input type="text" id="place" placeholder="例：◯◯サウナ" required />
-    </div>
+<!-- 料金 -->
+<div>
+  <label for="price">料金（円）</label><br />
+  <input type="number" id="price" inputmode="decimal" min="0" step="1" placeholder="1000" />
+</div>
 
-    <div>
-      <label for="location">場所（任意）</label><br />
-      <input type="text" id="location" placeholder="福岡市 ○○区 など" />
-    </div>
+<!-- 星評価：共通説明 -->
+<p style="margin-top:8px;">各項目を★で評価（1〜5）。クリックで数値が入るばい。</p>
 
-    <div>
-      <label for="sets">セット数</label><br />
-      <input type="number" id="sets" min="1" step="1" value="1" />
-    </div>
+<!-- お風呂 -->
+<div class="rate-field">
+  <label>お風呂</label>
+  <div class="stars">
+    <input type="radio" id="bath-5" name="bath" value="5"><label for="bath-5">★</label>
+    <input type="radio" id="bath-4" name="bath" value="4"><label for="bath-4">★</label>
+    <input type="radio" id="bath-3" name="bath" value="3"><label for="bath-3">★</label>
+    <input type="radio" id="bath-2" name="bath" value="2"><label for="bath-2">★</label>
+    <input type="radio" id="bath-1" name="bath" value="1"><label for="bath-1">★</label>
+  </div>
+</div>
 
-    <div>
-      <label for="saunaTemp">サウナ温度 (℃)</label><br />
-      <input type="number" id="saunaTemp" step="1" />
-    </div>
+<!-- サウナ -->
+<div class="rate-field">
+  <label>サウナ</label>
+  <div class="stars">
+    <input type="radio" id="sauna-5" name="sauna" value="5"><label for="sauna-5">★</label>
+    <input type="radio" id="sauna-4" name="sauna" value="4"><label for="sauna-4">★</label>
+    <input type="radio" id="sauna-3" name="sauna" value="3"><label for="sauna-3">★</label>
+    <input type="radio" id="sauna-2" name="sauna" value="2"><label for="sauna-2">★</label>
+    <input type="radio" id="sauna-1" name="sauna" value="1"><label for="sauna-1">★</label>
+  </div>
+</div>
 
-    <div>
-      <label for="waterTemp">水風呂 (℃)</label><br />
-      <input type="number" id="waterTemp" step="1" />
-    </div>
+<!-- 雰囲気 -->
+<div class="rate-field">
+  <label>雰囲気</label>
+  <div class="stars">
+    <input type="radio" id="mood-5" name="mood" value="5"><label for="mood-5">★</label>
+    <input type="radio" id="mood-4" name="mood" value="4"><label for="mood-4">★</label>
+    <input type="radio" id="mood-3" name="mood" value="3"><label for="mood-3">★</label>
+    <input type="radio" id="mood-2" name="mood" value="2"><label for="mood-2">★</label>
+    <input type="radio" id="mood-1" name="mood" value="1"><label for="mood-1">★</label>
+  </div>
+</div>
 
-    <div>
-      <label for="duration">滞在 (分)</label><br />
-      <input type="number" id="duration" min="1" step="1" />
-    </div>
+<!-- 創造性 -->
+<div class="rate-field">
+  <label>創造性</label>
+  <div class="stars">
+    <input type="radio" id="creative-5" name="creative" value="5"><label for="creative-5">★</label>
+    <input type="radio" id="creative-4" name="creative" value="4"><label for="creative-4">★</label>
+    <input type="radio" id="creative-3" name="creative" value="3"><label for="creative-3">★</label>
+    <input type="radio" id="creative-2" name="creative" value="2"><label for="creative-2">★</label>
+    <input type="radio" id="creative-1" name="creative" value="1"><label for="creative-1">★</label>
+  </div>
+</div>
 
-    <div>
-      <label for="rating">ととのい度</label><br />
-      <select id="rating">
-        <option value="">—</option>
-        <option>★☆☆☆☆</option>
-        <option>★★☆☆☆</option>
-        <option>★★★☆☆</option>
-        <option>★★★★☆</option>
-        <option>★★★★★</option>
-      </select>
-    </div>
+<!-- 外観 -->
+<div class="rate-field">
+  <label>外観</label>
+  <div class="stars">
+    <input type="radio" id="look-5" name="look" value="5"><label for="look-5">★</label>
+    <input type="radio" id="look-4" name="look" value="4"><label for="look-4">★</label>
+    <input type="radio" id="look-3" name="look" value="3"><label for="look-3">★</label>
+    <input type="radio" id="look-2" name="look" value="2"><label for="look-2">★</label>
+    <input type="radio" id="look-1" name="look" value="1"><label for="look-1">★</label>
+  </div>
+</div>
 
-    <div>
-      <label for="memo">メモ</label><br />
-      <textarea id="memo" rows="3" placeholder="混雑、ロウリュ、動線など"></textarea>
-    </div>
+<!-- 平均（自動計算） -->
+<div>
+  <label>評価合計（平均）</label><br />
+  <output id="scoreAvg">—</output>
+</div>
 
-    <div style="margin-top:8px;">
-      <button type="submit">登録</button>
-    </div>
-  </form>
-</section>
+<!-- 感想 -->
+<div>
+  <label for="comment">感想</label><br />
+  <textarea id="comment" rows="3" placeholder="メモ・良かった点・注意点など"></textarea>
+</div>
 
 
 
 
   </main>
 
-  <footer>おはよう諸君調子はどうだ？おれは今スタバでコーヒーぶちまけて最悪なテンションだ！</footer>
+  <footer>閲覧ありがとうございます。</footer>
  <script src="./assets/js/app.js" defer></script>
 </body>
 </html>

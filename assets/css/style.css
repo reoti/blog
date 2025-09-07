@@ -1,0 +1,21 @@
+/* 星評価の最小スタイル */
+.rate-field { margin: 6px 0; }
+.stars {
+  display: inline-flex;
+  flex-direction: row-reverse; /* 右から左に★が塗られる */
+  gap: 2px;
+}
+.stars input { display: none; }
+.stars label {
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #ccc;
+  user-select: none;
+  line-height: 1;
+}
+/* 選択済みより右側も塗る（row-reverseを使う実装） */
+.stars input:checked ~ label,
+.stars label:hover,
+.stars label:hover ~ label {
+  color: #f5a623; /* お好みで */
+}
