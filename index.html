@@ -12,15 +12,17 @@
   </header>
 
   <main>
+    <!-- メンバー紹介 -->
     <section aria-labelledby="members">
       <h2 id="members">メンバー紹介</h2>
       <h3>役職</h3>
       <h4>部長</h4>
       <p>みなさんを引っ張っていけるように頑張ります。</p>
-      <!-- 画像パス要確認：assets/img/ 配下などに置くのが無難 -->
-      <img src="./assets/img/29167020-D757-4FC3-A224-472E1F534BE8_1_105_c.jpeg" width="200" alt="イケメンです">
+      <!-- 画像パスは環境に合わせて変更してね -->
+      <img src="./assets/img/29167020-D757-4FC3-A224-472E1F534BE8_1_105_c.jpeg" width="200" alt="部長の写真">
     </section>
 
+    <!-- 登録フォーム -->
     <section id="entry" aria-labelledby="entry-title">
       <h2 id="entry-title">サウナ活動の登録</h2>
 
@@ -48,7 +50,7 @@
         <!-- お風呂 -->
         <div class="rate-field">
           <label>お風呂</label>
-          <div class="stars">
+          <div class="stars" role="radiogroup" aria-label="お風呂評価">
             <input type="radio" id="bath-5" name="bath" value="5"><label for="bath-5">★</label>
             <input type="radio" id="bath-4" name="bath" value="4"><label for="bath-4">★</label>
             <input type="radio" id="bath-3" name="bath" value="3"><label for="bath-3">★</label>
@@ -60,7 +62,7 @@
         <!-- サウナ -->
         <div class="rate-field">
           <label>サウナ</label>
-          <div class="stars">
+          <div class="stars" role="radiogroup" aria-label="サウナ評価">
             <input type="radio" id="sauna-5" name="sauna" value="5"><label for="sauna-5">★</label>
             <input type="radio" id="sauna-4" name="sauna" value="4"><label for="sauna-4">★</label>
             <input type="radio" id="sauna-3" name="sauna" value="3"><label for="sauna-3">★</label>
@@ -72,7 +74,7 @@
         <!-- 雰囲気 -->
         <div class="rate-field">
           <label>雰囲気</label>
-          <div class="stars">
+          <div class="stars" role="radiogroup" aria-label="雰囲気評価">
             <input type="radio" id="mood-5" name="mood" value="5"><label for="mood-5">★</label>
             <input type="radio" id="mood-4" name="mood" value="4"><label for="mood-4">★</label>
             <input type="radio" id="mood-3" name="mood" value="3"><label for="mood-3">★</label>
@@ -81,10 +83,10 @@
           </div>
         </div>
 
-        <!-- 創造性（★JSと合わせて 'creativity' に統一） -->
+        <!-- 創造性 -->
         <div class="rate-field">
           <label>創造性</label>
-          <div class="stars">
+          <div class="stars" role="radiogroup" aria-label="創造性評価">
             <input type="radio" id="creativity-5" name="creativity" value="5"><label for="creativity-5">★</label>
             <input type="radio" id="creativity-4" name="creativity" value="4"><label for="creativity-4">★</label>
             <input type="radio" id="creativity-3" name="creativity" value="3"><label for="creativity-3">★</label>
@@ -93,8 +95,64 @@
           </div>
         </div>
 
-        <!-- 外観（★JSと合わせて 'appearance' に統一） -->
+        <!-- 外観 -->
         <div class="rate-field">
           <label>外観</label>
-          <div class="stars">
-            <input type="radio" id="appearance-5" name="appearance" value=
+          <div class="stars" role="radiogroup" aria-label="外観評価">
+            <input type="radio" id="appearance-5" name="appearance" value="5"><label for="appearance-5">★</label>
+            <input type="radio" id="appearance-4" name="appearance" value="4"><label for="appearance-4">★</label>
+            <input type="radio" id="appearance-3" name="appearance" value="3"><label for="appearance-3">★</label>
+            <input type="radio" id="appearance-2" name="appearance" value="2"><label for="appearance-2">★</label>
+            <input type="radio" id="appearance-1" name="appearance" value="1"><label for="appearance-1">★</label>
+          </div>
+        </div>
+
+        <!-- 平均（自動） -->
+        <div>
+          <label>評価合計（平均）</label><br>
+          <output id="avgScore">—</output>
+        </div>
+
+        <!-- 感想 -->
+        <div>
+          <label for="comment">感想</label><br>
+          <textarea id="comment" name="comment" rows="3" placeholder="メモ・良かった点・注意点など"></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="reset">クリア</button>
+          <button type="submit">保存</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 記録一覧 -->
+    <section aria-labelledby="list">
+      <h2 id="list">記録一覧</h2>
+      <table id="recordsTable">
+        <thead>
+          <tr>
+            <th>施設名</th>
+            <th>住所</th>
+            <th>お風呂</th>
+            <th>サウナ</th>
+            <th>雰囲気</th>
+            <th>創造性</th>
+            <th>外観</th>
+            <th>平均</th>
+            <th>料金</th>
+            <th>感想</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>閲覧ありがとうございます。</footer>
+
+  <!-- JSはdeferでOK -->
+  <script src="./assets/js/app.js" defer></script>
+</body>
+</html>
