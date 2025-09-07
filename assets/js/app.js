@@ -1,146 +1,228 @@
-// assets/js/app.js
-"use strict";
-console.log("app.js loaded");
+/* ==============================
+   サウナ部 活動記録 app.js
+   - 平均点のライブ表示
+   - 送信で一覧テーブルへ反映
+   - LocalStorage 永続化
+   - 削除ボタン対応
+   ============================== */
 
-// ===== localStorage（安全ラッパ） =====
-const KEY = "saunaLogs.v1";
-const store = {
-  load() {
-    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
-    catch { return []; }
-  },
-  save(arr) { localStorage.setItem(KEY, JSON.stringify(arr)); },
-  clear() { localStorage.removeItem(KEY); }
-};
-
-// ===== デバッグ用の公開API =====
-window.saunaLog = {
-  add(entry) {
-    const now = new Date();
-    const rec = {
-      id: `log_${now.getTime().toString(36)}_${Math.random().toString(36).slice(2,8)}`,
-      created_at: now.toISOString(),
-      ...entry
-    };
-    const arr = store.load(); arr.push(rec); store.save(arr);
-    return rec;
-  },
-  all: () => store.load(),
-  clear: () => store.clear()
-};
-
-// ===== ユーティリティ =====
-const $  = (s, root=document) => root.querySelector(s);
-const $$ = (s, root=document) => Array.from(root.querySelectorAll(s));
-const z2 = (n) => String(n).padStart(2,"0");
-
-function nowLocalDatetimeValue() {
-  const d = new Date();
-  return `${d.getFullYear()}-${z2(d.getMonth()+1)}-${z2(d.getDate())}T${z2(d.getHours())}:${z2(d.getMinutes())}`;
-}
-function toJstIso(dtLocal) { return dtLocal ? `${dtLocal}:00+09:00` : null; }
-function val(id){ const el = $(id.startsWith("#")? id : `#${id}`); return el ? el.value.trim() : ""; }
-function num(id){ const v = val(id); return v === "" ? null : Number(v); }
-
-function getStar(name){
-  const el = $(`input[name="${name}"]:checked`);
-  return el ? Number(el.value) : null;
-}
-
-// 平均（★が入ってる項目だけで平均）
-function computeAvg(){
-  const arr = ["bath","sauna","mood","creative","look"]
-    .map(getStar)
-    .filter(v => v != null);
-  if (!arr.length) return null;
-  const avg = arr.reduce((a,b)=>a+b,0) / arr.length;
-  return Math.round(avg * 10) / 10; // 小数1位
-}
-function setAvg(avg){
-  const out = $("#scoreAvg");
-  if (!out) return;
-  const txt = (avg == null) ? "—" : avg.toFixed(1);
-  out.textContent = txt;
-  try { out.value = txt; } catch {}
-}
-function updateAvgView(){ setAvg(computeAvg()); }
-
-function showMsg(text, kind="ok"){
-  const el = $("#msg"); if (!el) return;
-  el.textContent = text;
-  el.style.color = kind === "ok" ? "#0a0" : "#c00";
-  el.style.margin = "8px 0 0";
-  clearTimeout(showMsg._t);
-  showMsg._t = setTimeout(()=>{ el.textContent = ""; }, 2000);
-}
-
-// ===== 起動時の結線 =====
 document.addEventListener("DOMContentLoaded", () => {
-  // 日時初期値
-  const dt = $("#dt");
-  if (dt) dt.value = nowLocalDatetimeValue();
+  // ---- DOM参照 ----
+  const form = document.getElementById("log-form");
+  if (!form) {
+    console.warn("フォーム #log-form が見つかりません。HTMLを確認してください。");
+    return;
+  }
 
-  // ★変更で平均再計算（確実に個別バインド）
-  $$('.stars input[type="radio"]').forEach(el => {
-    el.addEventListener('change', updateAvgView);
+  const avgOutput = document.getElementById("avgScore");
+  const tableBody = document.querySelector("#recordsTable tbody");
+
+  // 入力要素
+  const $ = (sel) => form.querySelector(sel);
+  const inpFacility = $("#facilityName");     // id="facilityName" name="facility_name"
+  const inpAddress  = $("#address");          // id="address"     name="address"
+  const inpPrice    = $("#price");            // id="price"       name="price"
+  const inpComment  = $("#comment");          // id="comment"     name="comment"
+
+  // 評価対象（HTMLの name と一致させる）
+  const METRICS = ["bath", "sauna", "mood", "creativity", "appearance"];
+
+  // ---- ストレージ鍵 ----
+  const STORAGE_KEY = "sauna_records_v1";
+
+  // ======================
+  // ユーティリティ
+  // ======================
+  const round1 = (num) => (Math.round(num * 10) / 10).toFixed(1);
+
+  const parseIntSafe = (v) => {
+    const n = Number.parseInt(v, 10);
+    return Number.isFinite(n) ? n : null;
+  };
+
+  const nowISO = () => new Date().toISOString();
+
+  const uid = () =>
+    Math.random().toString(36).slice(2, 8) + "-" + Date.now().toString(36);
+
+  // ======================
+  // 平均の計算・表示
+  // ======================
+  function readRatings() {
+    const values = {};
+    let sum = 0;
+    let count = 0;
+
+    METRICS.forEach((name) => {
+      const checked = form.querySelector(`input[name="${name}"]:checked`);
+      if (checked) {
+        const v = Number(checked.value);
+        if (Number.isFinite(v)) {
+          values[name] = v;
+          sum += v;
+          count += 1;
+        }
+      }
+    });
+
+    const avg = count > 0 ? sum / count : null;
+    return { values, avg, count };
+  }
+
+  function updateAverageOutput() {
+    const { avg, count } = readRatings();
+    avgOutput.textContent = count > 0 ? round1(avg) : "—";
+  }
+
+  // ラジオ変更で平均をライブ更新（フォーム全体にデリゲート）
+  form.addEventListener("change", (e) => {
+    if (e.target.matches('input[type="radio"]')) {
+      updateAverageOutput();
+    }
   });
-  updateAvgView(); // 初期表示
 
-  // 送信
-  const form = $("#log-form");
-  if (!form) return;
+  // リセット時は平均も戻す
+  form.addEventListener("reset", () => {
+    // setTimeoutでリセット反映後に実行
+    setTimeout(() => {
+      avgOutput.textContent = "—";
+    }, 0);
+  });
 
+  // 初期表示で一応更新しておく
+  updateAverageOutput();
+
+  // ======================
+  // LocalStorage（保存/読込）
+  // ======================
+  function loadRecords() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+      console.warn("ストレージ読み込み失敗:", e);
+      return [];
+    }
+  }
+
+  function saveRecords(records) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    } catch (e) {
+      console.warn("ストレージ保存失敗:", e);
+    }
+  }
+
+  // ======================
+  // テーブル描画
+  // ======================
+  function makeTd(text) {
+    const td = document.createElement("td");
+    td.textContent = text ?? "";
+    return td;
+  }
+
+  function renderRecords(records) {
+    if (!tableBody) return;
+
+    // 既存行クリア
+    tableBody.innerHTML = "";
+
+    // 新しい順に並べる（作成日時 desc）
+    const rows = [...records].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+
+    rows.forEach((rec) => {
+      const tr = document.createElement("tr");
+
+      tr.appendChild(makeTd(rec.facility_name));
+      tr.appendChild(makeTd(rec.address ?? ""));
+      tr.appendChild(makeTd(getRating(rec, "bath")));
+      tr.appendChild(makeTd(getRating(rec, "sauna")));
+      tr.appendChild(makeTd(getRating(rec, "mood")));
+      tr.appendChild(makeTd(getRating(rec, "creativity")));
+      tr.appendChild(makeTd(getRating(rec, "appearance")));
+      tr.appendChild(makeTd(rec.avg != null ? round1(rec.avg) : "—"));
+      tr.appendChild(makeTd(isFinite(rec.price) ? `${rec.price}` : ""));
+      tr.appendChild(makeTd(rec.comment ?? ""));
+
+      // 削除ボタン
+      const tdOps = document.createElement("td");
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.textContent = "削除";
+      delBtn.addEventListener("click", () => deleteRecord(rec.id));
+      tdOps.appendChild(delBtn);
+      tr.appendChild(tdOps);
+
+      tableBody.appendChild(tr);
+    });
+  }
+
+  function getRating(rec, key) {
+    return rec?.ratings?.[key] ?? "";
+  }
+
+  // ======================
+  // 送信処理
+  // ======================
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const entry = {
-      when_jst: toJstIso(val("dt")),
-      place:    val("place"),
-      address:  val("address") || null,
-      location: val("location") || null,   // 使ってなければnullのままでOK
-      price_yen: num("price"),
-
-      // 星評価（1〜5）
-      bath: getStar("bath"),
-      sauna: getStar("sauna"),
-      mood: getStar("mood"),
-      creative: getStar("creative"),
-      look: getStar("look"),
-      score_avg: computeAvg(),
-
-      // 既存の温度・滞在系（任意）
-      sauna_c: num("saunaTemp"),
-      water_c: num("waterTemp"),
-      duration_min: num("duration"),
-
-      // 感想
-      comment: val("comment") || val("memo") || null,
-
-      source: "web-local-v1"
-    };
-
-    // 必須チェック
-    if (!entry.when_jst || !entry.place){
-      showMsg("日時と施設名は必須ばい！", "ng");
+    // 必須：施設名
+    const facilityName = (inpFacility?.value ?? "").trim();
+    if (!facilityName) {
+      alert("施設名を入力してね。");
+      inpFacility?.focus();
       return;
     }
 
-    // ざっくりバリデーション
-    if (entry.sauna_c != null && (entry.sauna_c < 40 || entry.sauna_c > 130)) {
-      showMsg("サウナ温度は 40〜130℃ くらいでお願い〜", "ng"); return;
-    }
-    if (entry.water_c != null && (entry.water_c < 0 || entry.water_c > 40)) {
-      showMsg("水風呂は 0〜40℃ くらいでお願い〜", "ng"); return;
-    }
-    if (entry.price_yen != null && entry.price_yen < 0) {
-      showMsg("料金は 0 円以上で頼むばい", "ng"); return;
+    // 評価の読み取り
+    const { values: ratings, avg, count } = readRatings();
+    if (count === 0) {
+      // 全部未選択でもOKにするならコメントアウト
+      if (!confirm("評価が未選択です。このまま保存しますか？")) {
+        return;
+      }
     }
 
-    window.saunaLog.add(entry);
+    const record = {
+      id: uid(),
+      facility_name: facilityName,
+      address: (inpAddress?.value ?? "").trim(),
+      price: parseIntSafe(inpPrice?.value),
+      ratings,                 // {bath: 4, sauna:5, ...}
+      avg,                     // 数値 or null
+      comment: (inpComment?.value ?? "").trim(),
+      createdAt: nowISO(),
+    };
 
+    const records = loadRecords();
+    records.push(record);
+    saveRecords(records);
+    renderRecords(records);
+
+    // 送信後クリア
     form.reset();
-    if (dt) dt.value = nowLocalDatetimeValue();
-    updateAvgView();
-    showMsg("登録成功　最高！");
+    updateAverageOutput();
+
+    // フォーカス戻し（連投が楽）
+    inpFacility?.focus();
   });
+
+  // ======================
+  // 削除処理
+  // ======================
+  function deleteRecord(id) {
+    const records = loadRecords();
+    const next = records.filter((r) => r.id !== id);
+    saveRecords(next);
+    renderRecords(next);
+  }
+
+  // ======================
+  // 初期描画
+  // ======================
+  renderRecords(loadRecords());
 });
