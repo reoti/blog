@@ -16,8 +16,72 @@
       <h3>部長</h3>
       <h4>みなさんを引っ張っていけるように頑張ります。</h4>
       <img src="./images/29167020-D757-4FC3-A224-472E1F534BE8_1_105_c.jpg" width="200" alt="イケメンです"/>
-      <h4>ホーム</h4>
-      <h4>ホームグラウンドは、マックスバリュー梅満店になります。</h4> 
+      
+<section id="entry">
+  <h2>サウナ活動の登録</h2>
+
+  <form id="log-form" autocomplete="off">
+    <div>
+      <label for="dt">日時 (JST)</label><br />
+      <input type="datetime-local" id="dt" required />
+    </div>
+
+    <div>
+      <label for="place">施設名</label><br />
+      <input type="text" id="place" placeholder="例：◯◯サウナ" required />
+    </div>
+
+    <div>
+      <label for="location">場所（任意）</label><br />
+      <input type="text" id="location" placeholder="福岡市 ○○区 など" />
+    </div>
+
+    <div>
+      <label for="sets">セット数</label><br />
+      <input type="number" id="sets" min="1" step="1" value="1" />
+    </div>
+
+    <div>
+      <label for="saunaTemp">サウナ温度 (℃)</label><br />
+      <input type="number" id="saunaTemp" step="1" />
+    </div>
+
+    <div>
+      <label for="waterTemp">水風呂 (℃)</label><br />
+      <input type="number" id="waterTemp" step="1" />
+    </div>
+
+    <div>
+      <label for="duration">滞在 (分)</label><br />
+      <input type="number" id="duration" min="1" step="1" />
+    </div>
+
+    <div>
+      <label for="rating">ととのい度</label><br />
+      <select id="rating">
+        <option value="">—</option>
+        <option>★☆☆☆☆</option>
+        <option>★★☆☆☆</option>
+        <option>★★★☆☆</option>
+        <option>★★★★☆</option>
+        <option>★★★★★</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="memo">メモ</label><br />
+      <textarea id="memo" rows="3" placeholder="混雑、ロウリュ、動線など"></textarea>
+    </div>
+
+    <div style="margin-top:8px;">
+      <button type="submit">登録</button>
+    </div>
+  </form>
+</section>
+
+
+
+
   </main>
 
   <footer>おはよう諸君調子はどうだ？おれは今スタバでコーヒーぶちまけて最悪なテンションだ！</footer>
