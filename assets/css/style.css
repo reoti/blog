@@ -1,3 +1,26 @@
+/* =========================
+   サウナっぽい背景
+========================= */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: 
+    linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)),
+    repeating-linear-gradient(
+      90deg,
+      #d8b48a 0px,
+      #d8b48a 40px,
+      #c49a6c 40px,
+      #c49a6c 80px
+    );
+  background-size: cover;
+  min-height: 100vh;
+}
+
+
+/* =========================
+   メンバー紹介タイトル
+========================= */
 .members-list {
   display: flex;
   flex-direction: column;
@@ -33,7 +56,7 @@
 }
 
 
-/* 星評価の最小スタイル */
+/* 星評価の制御関係 */
 .rate-field { margin: 6px 0; }
 .stars {
   display: inline-flex;
