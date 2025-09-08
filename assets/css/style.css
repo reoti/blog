@@ -1,3 +1,38 @@
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;              /* 各カードの間隔 */
+  align-items: center;    /* 横位置を中央に */
+  padding: 10px;
+}
+
+.profile {
+  text-align: center;
+  max-width: 250px;
+}
+
+.profile img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;     /* 丸くする */
+  display: block;
+  margin: 0 auto 10px;    /* 下に余白 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.profile .role {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.profile .comment {
+  font-size: 0.9em;
+  color: #555;
+}
+
+
 /* 星評価の最小スタイル */
 .rate-field { margin: 6px 0; }
 .stars {
@@ -17,5 +52,5 @@
 .stars input:checked ~ label,
 .stars label:hover,
 .stars label:hover ~ label {
-  color: #f5a623; /* お好みで */
+  color: gold; /* お好みで */
 }
