@@ -77,3 +77,31 @@ body {
 .stars label:hover ~ label {
   color: gold; /* お好みで */
 }
+/* === 写真プレビュー / サムネ / モーダル === */
+.preview-wrap { margin: 8px 0; }
+
+.thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
+  border: 1px solid #e5e7eb;
+}
+
+.modal { position: fixed; inset: 0; display: none; z-index: 50; }
+.modal[aria-hidden="false"] { display: block; }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
+.modal-body { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; }
+.modal-body img {
+  max-width: min(960px, 92vw);
+  max-height: 88vh;
+  border-radius: 10px;
+  background: #fff;
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  font-size: 22px; line-height: 1; padding: 6px 10px;
+  border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer;
+}

@@ -12,49 +12,42 @@
   </header>
 
   <main>
-    <!-- メンバー紹介 -->
-    <section >
+    <!-- メンバー紹介（そのまま） -->
+    <section>
       <section class="members">
-  <h2>メンバー紹介</h2>
-  <div class="members-list">
-
-    <div class="profile">
-      <img src="IMG_8095.PNG" alt="部長の写真">
-      <h3 class="role">部長</h3>
-      <p class="comment">２セット目まで入れるように頑張ります。</p>
-    </div>
-
-    <div class="profile">
-      <img src="IMG_8096.PNG" alt="お笑い担当の写真">
-      <h3 class="role">お笑い担当</h3>
-      <p class="comment">みんなにお楽しみ会話を届けます！</p>
-    </div>
-
-    <div class="profile">
-      <img src="IMG_8098.PNG" alt="会計の写真">
-      <h3 class="role">会計</h3>
-      <p class="comment">公平不偏の姿勢で責務を全うします。</p>
-    </div>
-
-    <div class="profile">
-      <img src="IMG_8094.PNG" alt="最高顧問の写真">
-      <h3 class="role">最高顧問</h3>
-      <p class="comment">最高顧問としての責務を果たします。</p>
-    </div>
-
-    <div class="profile">
-      <img src="IMG_8099.PNG" alt="要務の写真">
-      <h3 class="role">要務係</h3>
-      <p class="comment">予約・WEBサイト管理等めんどくさい仕事は全部やります！</p>
-    </div>
-
-  </div>
-</section>
-
+        <h2>メンバー紹介</h2>
+        <div class="members-list">
+          <div class="profile">
+            <img src="IMG_8095.PNG" alt="部長の写真">
+            <h3 class="role">部長</h3>
+            <p class="comment">２セット目まで入れるように頑張ります。</p>
+          </div>
+          <div class="profile">
+            <img src="IMG_8096.PNG" alt="お笑い担当の写真">
+            <h3 class="role">お笑い担当</h3>
+            <p class="comment">みんなにお楽しみ会話を届けます！</p>
+          </div>
+          <div class="profile">
+            <img src="IMG_8098.PNG" alt="会計の写真">
+            <h3 class="role">会計</h3>
+            <p class="comment">公平不偏の姿勢で責務を全うします。</p>
+          </div>
+          <div class="profile">
+            <img src="IMG_8094.PNG" alt="最高顧問の写真">
+            <h3 class="role">最高顧問</h3>
+            <p class="comment">最高顧問としての責務を果たします。</p>
+          </div>
+          <div class="profile">
+            <img src="IMG_8099.PNG" alt="要務の写真">
+            <h3 class="role">要務係</h3>
+            <p class="comment">予約・WEBサイト管理等めんどくさい仕事は全部やります！</p>
+          </div>
+        </div>
+      </section>
     </section>
 
     <!-- 登録フォーム -->
-    <section id="entry" >
+    <section id="entry">
       <h2>活動実績</h2>
 
       <form id="log-form" autocomplete="off">
@@ -74,6 +67,16 @@
         <div>
           <label for="price">料金（円）</label><br>
           <input type="number" id="price" name="price" inputmode="numeric" min="0" step="1" placeholder="1000">
+        </div>
+
+        <!-- ★ 写真（追加） -->
+        <div>
+          <label for="photo">写真（任意）</label><br>
+          <input type="file" id="photo" accept="image/*" capture="environment">
+          <small>※iPhoneでHEICになる場合は設定→カメラ→フォーマットを「互換性優先」にするとJPEGになります。</small>
+        </div>
+        <div class="preview-wrap">
+          <img id="photoPreview" alt="写真プレビュー" style="display:none; max-width: 220px; border-radius: 8px;">
         </div>
 
         <p style="margin-top:8px;">各項目を★で評価（1〜5）</p>
@@ -163,6 +166,8 @@
       <table id="recordsTable">
         <thead>
           <tr>
+            <!-- ★ 写真列を追加 -->
+            <th>写真</th>
             <th>施設名</th>
             <th>住所</th>
             <th>お風呂</th>
@@ -182,6 +187,15 @@
   </main>
 
   <footer>お問い合わせはこちら   LINE: ikereo0204 </footer>
+
+  <!-- 画像拡大用モーダル -->
+  <div id="imgModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-body">
+      <button class="modal-close" data-close aria-label="閉じる">×</button>
+      <img id="modalImg" alt="拡大画像">
+    </div>
+  </div>
 
   <!-- JSはdeferでOK -->
   <script src="./assets/js/app.js" defer></script>
