@@ -263,3 +263,74 @@ function fitToCanvas(img, maxW, maxH) {
 /* 初期描画 */
 renderTable();
 updateAverage();
+/* ==== 粒子（湯気/泡）背景 ==== */
+(function(){
+  const cv = document.getElementById('bg-canvas');
+  if(!cv || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const ctx = cv.getContext('2d', { alpha:true });
+  let w=0, h=0, dpr=1, rafId=null;
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = cv.clientWidth = window.innerWidth;
+    h = cv.clientHeight = window.innerHeight;
+    cv.width = Math.floor(w * dpr);
+    cv.height = Math.floor(h * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener('resize', resize, { passive:true });
+  resize();
+
+  // 粒子を“湯気/泡”っぽく
+  const COUNT = Math.round(Math.min(100, (w*h)/25000)); // 画面に応じて自動調整
+  const particles = Array.from({length: COUNT}, () => spawn());
+
+  function spawn(){
+    const r = rand(2, 6);
+    return {
+      x: Math.random()*w,
+      y: h + rand(0, h*0.4),
+      r,
+      vx: rand(-0.15, 0.15),
+      vy: rand(-0.55, -0.25),   // 上昇
+      alpha: rand(0.3, 0.85),
+      drift: rand(-0.003, 0.003),
+    };
+  }
+  function rand(a,b){ return a + Math.random()*(b-a); }
+
+  function step(){
+    ctx.clearRect(0,0,w,h);
+
+    // ふわっとした円（グラデで湯気感）
+    for(const p of particles){
+      p.x += p.vx + Math.sin(p.y*0.01)*p.drift;
+      p.y += p.vy;
+      p.alpha *= 0.999; // 徐々に薄く
+
+      // 再出現
+      if(p.y < -20 || p.alpha < 0.12){
+        Object.assign(p, spawn(), { y: h+20 });
+      }
+
+      const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r*3);
+      grd.addColorStop(0, `rgba(255,255,255,${0.20*p.alpha})`);
+      grd.addColorStop(1, `rgba(255,255,255,0)`);
+
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r*3, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    rafId = requestAnimationFrame(step);
+  }
+  step();
+
+  // ページ非表示で休止（バッテリー配慮）
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden){ cancelAnimationFrame(rafId); }
+    else { step(); }
+  });
+})();

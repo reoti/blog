@@ -105,3 +105,14 @@ body {
   font-size: 22px; line-height: 1; padding: 6px 10px;
   border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer;
 }
+/* ==== 粒子背景（Canvas） ==== */
+#bg-canvas{
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;         /* グラデよりさらに背面に */
+  pointer-events: none;
+  opacity: 0.65;       /* 濃い場合は下げる */
+  filter: blur(0.2px); /* ほんのりソフトに */
+}
