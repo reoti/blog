@@ -105,6 +105,56 @@ body {
   font-size: 22px; line-height: 1; padding: 6px 10px;
   border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer;
 }
+/* ==== 動く背景：アニメーション・グラデ ==== */
+:root{
+  --bg1:#0ea5e9; /* 水色 */
+  --bg2:#22c55e; /* 緑 */
+  --bg3:#f59e0b; /* 橙 */
+  --bg4:#a78bfa; /* 薄紫 */
+}
+
+/* 背景レイヤ（コンテンツの後ろ全面） */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background: radial-gradient(30% 40% at 20% 20%, var(--bg1), transparent 60%),
+              radial-gradient(35% 45% at 80% 30%, var(--bg2), transparent 65%),
+              radial-gradient(45% 50% at 30% 80%, var(--bg3), transparent 70%),
+              radial-gradient(40% 55% at 75% 75%, var(--bg4), transparent 70%),
+              linear-gradient(120deg, #0f172a, #111827 60%, #0b1324);
+  filter: saturate(110%) contrast(105%) brightness(105%) blur(0px);
+  animation: flow 18s ease-in-out infinite alternate;
+  will-change: transform, filter, background-position;
+}
+
+/* わずかなパララックス＆ゆらぎ */
+@keyframes flow{
+  0%   { transform: scale(1) translate3d(0,0,0); filter: blur(0.5px); }
+  50%  { transform: scale(1.05) translate3d(0,-1.2%,0); filter: blur(1px); }
+  100% { transform: scale(1.08) translate3d(0.4%, -2.4%,0); filter: blur(1.2px); }
+}
+
+/* 本文が読みやすいように背景に薄いベール */
+main, header, footer{
+  position: relative;
+  backdrop-filter: saturate(120%) blur(0px);
+}
+main > section, header, footer{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: clamp(10px,2.5vw,18px);
+  margin: clamp(8px,2vw,14px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+/* 低性能端末/節電モードの配慮 */
+@media (prefers-reduced-motion: reduce){
+  body::before{ animation: none; }
+}
+
 /* ==== 粒子背景（Canvas） ==== */
 #bg-canvas{
   position: fixed;
