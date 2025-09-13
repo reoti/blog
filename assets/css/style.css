@@ -1,21 +1,4 @@
-/* =========================
-   サウナっぽい背景
-========================= */
-body {
-  margin: 0;
-  font-family: sans-serif;
-  background: 
-    linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)),
-    repeating-linear-gradient(
-      90deg,
-      #d8b48a 0px,
-      #d8b48a 40px,
-      #c49a6c 40px,
-      #c49a6c 80px
-    );
-  background-size: cover;
-  min-height: 100vh;
-}
+
 
 
 /* =========================
