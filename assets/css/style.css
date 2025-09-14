@@ -1,3 +1,25 @@
+:root{
+  --bg1:#00bcd4;  /* 水風呂ブルー */
+  --bg2:#f5f5f5;  /* 蒸気ホワイト */
+  --bg3:#90caf9;  /* 淡い青（水の反射） */
+  --bg4:#a7c7e7;  /* 外気浴の涼しい空気 */
+  --bgAccent:#d8b48a; /* 木材の薄いベージュ（控えめ） */
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background: radial-gradient(40% 50% at 25% 25%, var(--bg1), transparent 70%),
+              radial-gradient(35% 45% at 70% 20%, var(--bg2), transparent 65%),
+              radial-gradient(50% 55% at 30% 80%, var(--bg3), transparent 75%),
+              radial-gradient(40% 60% at 75% 75%, var(--bg4), transparent 70%),
+              radial-gradient(30% 40% at 50% 50%, var(--bgAccent), transparent 80%),
+              linear-gradient(120deg, #0b1324, #1e293b 60%, #0f172a);
+  animation: flow 20s ease-in-out infinite alternate;
+  filter: saturate(115%) brightness(112%) contrast(105%);
+}
 
 
 
